@@ -1,6 +1,7 @@
 package Reto13;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.text.*;
 import java.awt.event.*;
 
 public class ICentro extends JFrame implements ActionListener{
@@ -75,7 +76,11 @@ public class ICentro extends JFrame implements ActionListener{
             System.exit(0);
         }
         if(e.getSource() == boton2){
-            
+            IReporte window = new IReporte();
+            window.setBounds(0,0,450,250);
+            window.setVisible(true);
+            window.setLocationRelativeTo(null);
+            window.setResizable(false);
         }
     }
 
@@ -86,11 +91,17 @@ public class ICentro extends JFrame implements ActionListener{
         private JRadioButton rboton1, rboton2;
         private ButtonGroup bg;
         private JPanel panel1;
+        private JTextPane textpane;
+        private JScrollPane scrollp;
         public IReporte(){
             setLayout(null);
             setTitle("Reporte del Inventario del centro de investigacion");
-            
-            panel1.setLayout(null);
+            IniciarPanel();
+
+            //Label Principal
+            label1 = new JLabel("Tipo reporte:");
+            label1.setBounds(20, 0, 100, 30);
+            add(label1);
 
             //RadioButtons
             bg = new ButtonGroup();
@@ -105,62 +116,86 @@ public class ICentro extends JFrame implements ActionListener{
             add(rboton2);
             bg.add(rboton2);
 
-            panel1.add(rboton1);
-            panel1.add(rboton2);
             add(panel1);
         }
 
+        public void IniciarPanel(){
+            panel1 = new JPanel();
+            panel1.setBounds(0, 30, 450, 250);
+            panel1.setLayout(null);
+            this.getContentPane().add(panel1);
+        }
+
         public void stateChanged(ChangeEvent e){
+            panel1.removeAll();
             if(rboton1.isSelected()){
-                panel1.removeAll();
-
-                //Rehacer RadioButtons
-                bg = new ButtonGroup();
-                rboton1 = new JRadioButton("Individual");
-                rboton1.setBounds(100, 5, 100, 20);
-                rboton1.addChangeListener(this);
-                add(rboton1);
-                bg.add(rboton1);
-                rboton2 = new JRadioButton("General");
-                rboton2.setBounds(200, 5, 100, 20);
-                rboton2.addChangeListener(this);
-                add(rboton2);
-                bg.add(rboton2);
-
                 //Labels
-                label1 = new JLabel("Tipo reporte:");
-                label1.setBounds(20, 0, 100, 30);
-                add(label1);
                 label2 = new JLabel("C.I. del Responsable de equipos:");
-                label2.setBounds(20, 30, 185, 30);
-                add(label2);
+                label2.setBounds(20, 0, 185, 30);
+                panel1.add(label2);
                 label3 = new JLabel("Totalizacion:");
-                label3.setBounds(40, 90, 100, 30);
-                add(label3);
+                label3.setBounds(40, 50, 100, 30);
+                panel1.add(label3);
                 label4 = new JLabel("___equipos");
-                label4.setBounds(40, 110, 100, 30);
-                add(label4);
+                label4.setBounds(40, 70, 100, 30);
+                panel1.add(label4);
                 label5 = new JLabel("_____Bs.");
-                label5.setBounds(40, 130, 100, 30);
-                add(label5);
+                label5.setBounds(40, 90, 100, 30);
+                panel1.add(label5);
 
                 //TextFields
                 tfield1 = new JTextField();
-                tfield1.setBounds(210, 35, 50, 20);
-                add(tfield1);
+                tfield1.setBounds(210, 7, 70, 20);
+                panel1.add(tfield1);
 
                 //Buttons
                 boton1 = new JButton("Totalizar");
-                boton1.setBounds(290, 35, 85, 20);
-                add(boton1);
+                boton1.setBounds(290, 7, 85, 20);
+                panel1.add(boton1);
                 boton1.addActionListener(this);
                 boton2 = new JButton("Continuar");
-                boton2.setBounds(290, 170, 90, 20);
-                add(boton2);
+                boton2.setBounds(290, 140, 90, 20);
+                panel1.add(boton2);
+                boton2.addActionListener(this);
+            }
+            if(rboton2.isSelected()){
+
+                //Labels
+                label3 = new JLabel("Totalizacion:");
+                label3.setBounds(40, 105, 100, 30);
+                panel1.add(label3);
+                label4 = new JLabel("___equipos");
+                label4.setBounds(40, 125, 100, 30);
+                panel1.add(label4);
+                label5 = new JLabel("_____Bs.");
+                label5.setBounds(40, 145, 100, 30);
+                panel1.add(label5);
+
+                //Button
+                boton2 = new JButton("Continuar");
+                boton2.setBounds(290, 120, 90, 20);
+                panel1.add(boton2);
                 boton2.addActionListener(this);
 
-
+                //TextPane
+                textpane = new JTextPane();
+                textpane.setEditable(false);
+                textpane.setContentType("text/plain");
+                StyledDocument doc = textpane.getStyledDocument();
+                Style boldStyle = textpane.addStyle("Bold", null);
+                StyleConstants.setBold(boldStyle, true);
+                try {
+                    doc.insertString(doc.getLength(), "C.I. Responsable                 Cantidad equipos               Monto total(BS.)", boldStyle);
+                } catch (BadLocationException ae) {
+                    ae.printStackTrace();
+                }
+                scrollp = new JScrollPane(textpane);
+                scrollp.setBounds(20,5,395,100);
+                panel1.add(scrollp);
             }
+            
+            panel1.revalidate();
+            panel1.repaint();
         }
 
         public void actionPerformed(ActionEvent e){
@@ -178,10 +213,6 @@ public class ICentro extends JFrame implements ActionListener{
         ventana.setVisible(true);
         ventana.setLocationRelativeTo(null);
         ventana.setResizable(false);
-        IReporte window = ventana.new IReporte();
-        window.setBounds(0,0,450,250);
-        window.setVisible(true);
-        window.setLocationRelativeTo(null);
-        window.setResizable(false);
+        
     }
 }
